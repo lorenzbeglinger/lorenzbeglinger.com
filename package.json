@@ -7,8 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "pages:dev": "astro build && wrangler pages dev ./dist",
-    "pages:deploy": "astro build && wrangler pages deploy ./dist"
+    "pages:dev": "astro build && pnpm dlx wrangler pages dev ./dist",
+    "pages:deploy": "astro build && pnpm dlx wrangler pages deploy ./dist"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,6 @@
     "typescript": "^7.0.2"
   },
   "devDependencies": {
-    "@types/node": "^26.2.0",
-    "wrangler": "^4.123.0"
+    "@types/node": "^26.2.0"
   }
 }

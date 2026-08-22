@@ -60,11 +60,13 @@ Without these three variables set, `/api/contact` returns a 500 and the form sho
 4. Add the three environment variables above.
 5. Deploy. Cloudflare will auto-build on every push to `main`.
 
-Alternatively, deploy from the CLI once `wrangler` is authenticated (`pnpm exec wrangler login`):
+Alternatively, deploy from the CLI once `wrangler` is authenticated (`pnpm dlx wrangler login`):
 
 ```bash
 pnpm pages:deploy
 ```
+
+(`wrangler` isn't a committed dependency — `pages:dev`/`pages:deploy` fetch it on demand via `pnpm dlx` so it never runs on Cloudflare's own build.)
 
 ## Project structure
 
