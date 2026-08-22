@@ -1,14 +1,9 @@
 import { Resend } from "resend";
 
-interface Env {
+export interface ContactEnv {
   RESEND_API_KEY: string;
   CONTACT_TO_EMAIL: string;
   CONTACT_FROM_EMAIL: string;
-}
-
-interface PagesContext {
-  request: Request;
-  env: Env;
 }
 
 type FieldName = "name" | "email" | "type" | "date" | "guests";
@@ -57,7 +52,11 @@ function validate(body: Record<string, unknown>) {
   return errors;
 }
 
-export const onRequestPost = async ({ request, env }: PagesContext) => {
+export async function handleContact(request: Request, env: ContactEnv): Promise<Response> {
+  if (request.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -105,4 +104,4 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   }
 
   return Response.json({ ok: true });
-};
+}

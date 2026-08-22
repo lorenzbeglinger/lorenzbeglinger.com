@@ -1,12 +1,17 @@
 # Lorenz Beglinger — Website
 
-Astro static site + a Cloudflare Pages Function for the contact form.
+Astro static site, deployed as a Cloudflare Worker with static assets. The
+worker also handles the contact form's `/api/contact` endpoint.
 
 ## Stack
 
 - [Astro](https://astro.build) (static output, no client framework — interactivity is plain `<script>` per component)
-- Cloudflare Pages for hosting
-- A Cloudflare Pages Function (`functions/api/contact.ts`) that emails form submissions via [Resend](https://resend.com)
+- A Cloudflare Worker (`worker/index.ts`) that serves the built site as static
+  assets and handles `POST /api/contact`, emailing submissions via [Resend](https://resend.com)
+
+Note: this project's Cloudflare dashboard deploy command runs `wrangler
+deploy` (not `wrangler pages deploy`), so it's set up as a plain Worker with
+a static-assets binding rather than a classic Pages project.
 
 ## Local development
 
@@ -15,11 +20,11 @@ pnpm install
 pnpm dev              # http://localhost:4321 — site only, /api/contact is not served here
 ```
 
-To test the contact form end-to-end locally (including the Pages Function):
+To test the contact form end-to-end locally (including the worker):
 
 ```bash
 cp .dev.vars.example .dev.vars   # fill in real values, see below
-pnpm pages:dev                   # builds + runs wrangler pages dev on the built output
+pnpm worker:dev                  # builds + runs wrangler dev on the built output
 ```
 
 ## Media assets
@@ -43,30 +48,30 @@ If you'd rather use a different frame as the poster, or want the video re-encode
 1. Create a free account at [resend.com](https://resend.com).
 2. Verify a sending domain (or subdomain, e.g. `mail.lorenzbeglinger.ch`) — needed so `CONTACT_FROM_EMAIL` isn't rejected as spam.
 3. Create an API key.
-4. In the Cloudflare Pages project settings → **Environment variables**, add for both Preview and Production:
-   - `RESEND_API_KEY` — the key from step 3 (mark as **secret**)
+4. In the Cloudflare dashboard, on this Worker's settings → **Variables and Secrets**, add:
+   - `RESEND_API_KEY` — the key from step 3 (add as **secret**)
    - `CONTACT_TO_EMAIL` — the inbox that should receive Anfragen
    - `CONTACT_FROM_EMAIL` — a verified sender address on your domain, e.g. `anfrage@lorenzbeglinger.ch`
 
 Without these three variables set, `/api/contact` returns a 500 and the form shows the error banner.
 
-## Deploying (GitHub + Cloudflare Pages)
+## Deploying (GitHub + Cloudflare)
 
-1. Push this repo to a new GitHub repository under your account.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick the repo.
+1. Push this repo to a GitHub repository under your account.
+2. In the Cloudflare dashboard: **Workers & Pages → Create → Connect to Git**, pick the repo.
 3. Build settings:
    - Build command: `pnpm build`
-   - Build output directory: `dist`
+   - Deploy command: `npx wrangler deploy` (this is what actually reads `wrangler.toml`'s `main` + `[assets]` config)
 4. Add the three environment variables above.
 5. Deploy. Cloudflare will auto-build on every push to `main`.
 
 Alternatively, deploy from the CLI once `wrangler` is authenticated (`pnpm dlx wrangler login`):
 
 ```bash
-pnpm pages:deploy
+pnpm worker:deploy
 ```
 
-(`wrangler` isn't a committed dependency — `pages:dev`/`pages:deploy` fetch it on demand via `pnpm dlx` so it never runs on Cloudflare's own build.)
+(`wrangler` isn't a committed dependency — `worker:dev`/`worker:deploy` fetch it on demand via `pnpm dlx` so it never runs during Cloudflare's own build step.)
 
 ## Project structure
 
@@ -85,6 +90,7 @@ src/
     index.astro
     impressum.astro
     datenschutz.astro
-functions/
-  api/contact.ts            Cloudflare Pages Function, sends via Resend
+worker/
+  index.ts                  fetch handler: routes /api/contact, else serves ASSETS
+  contact.ts                 validation + Resend send logic
 ```
