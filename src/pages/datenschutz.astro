@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Base title="Datenschutzerklärung — Lorenz Beglinger">
+  <Header />
+  <main class="legal">
+    <div class="container">
+      <h1>Datenschutzerklärung</h1>
+      <p class="placeholder">
+        TODO: Datenschutzerklärung ergänzen — u.a. welche Daten das
+        Anfrageformular sammelt (Name, E-Mail, Datum, Gästezahl), wie sie per
+        E-Mail verarbeitet werden, und ob/welche Cookies eingesetzt werden.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal {
+    padding: 140px 0 100px;
+    min-height: 60vh;
+  }
+
+  h1 {
+    font: 300 clamp(2.25rem, 1.6rem + 2vw, 3.25rem) / 1.1 var(--font-serif);
+    color: var(--text-cream);
+    margin: 0 0 24px;
+  }
+
+  .placeholder {
+    font: 300 17px/1.8 var(--font-sans);
+    color: var(--text-cream-dim);
+    border-left: 2px solid var(--gold);
+    padding-left: 18px;
+  }
+</style>

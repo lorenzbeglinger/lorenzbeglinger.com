@@ -1,0 +1,52 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <span class="legal">© {year} Lorenz Beglinger</span>
+    <img src="/logo-mark.png" alt="" class="mark" />
+    <span class="links">
+      <a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-dark);
+    padding: 38px 0 60px;
+    border-top: 1px solid var(--line-on-dark);
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .legal,
+  .links {
+    font: 300 13px/1 var(--font-sans);
+    color: var(--text-cream-faint);
+  }
+
+  .links a:hover {
+    color: var(--text-cream-dim);
+  }
+
+  .mark {
+    height: 38px;
+    width: auto;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 640px) {
+    .inner {
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+    }
+  }
+</style>

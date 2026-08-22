@@ -1,0 +1,513 @@
+---
+const options = [
+  { value: "tisch", label: "Magie am Tisch" },
+  { value: "kindershow", label: "Kindershow" },
+  { value: "beides", label: "Beides" },
+];
+---
+
+<section class="contact" id="anfrage">
+  <div class="container grid">
+    <div class="intro">
+      <p class="kicker">Anfrage</p>
+      <h2>Erzähle mir von deinem Anlass.</h2>
+      <p class="lead">
+        Ich melde mich innerhalb von 48 Stunden mit einem konkreten Vorschlag
+        und einem Preis. Unverbindlich, versteht sich.
+      </p>
+    </div>
+
+    <div class="card" data-contact-card data-state="form">
+      <div class="form-view" data-form-view>
+        <div class="banner" role="alert" data-error-banner hidden>
+          <span class="banner-icon" aria-hidden="true">!</span>
+          <div>
+            <p class="banner-title">
+              Die Anfrage konnte nicht gesendet werden.
+            </p>
+            <p class="banner-text">Bitte prüfe die markierten Felder.</p>
+          </div>
+        </div>
+
+        <form novalidate data-contact-form>
+          <div class="hp-field" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="row">
+            <div class="field" data-field="name">
+              <label for="name">Vorname + Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                placeholder="Anna Muster"
+                required
+              />
+              <p class="field-error" data-field-error></p>
+            </div>
+            <div class="field" data-field="email">
+              <label for="email">E-Mail</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="anna@beispiel.ch"
+                required
+              />
+              <p class="field-error" data-field-error></p>
+            </div>
+          </div>
+
+          <fieldset class="pillgroup" data-field="type">
+            <legend>Was darf es sein?</legend>
+            <div class="pills">
+              {
+                options.map((o, i) => (
+                  <span class="pill">
+                    <input
+                      type="radio"
+                      name="type"
+                      id={`type-${o.value}`}
+                      value={o.value}
+                      required
+                      checked={i === 0}
+                    />
+                    <label for={`type-${o.value}`}>{o.label}</label>
+                  </span>
+                ))
+              }
+            </div>
+            <p class="field-error" data-field-error></p>
+          </fieldset>
+
+          <div class="row">
+            <div class="field" data-field="date">
+              <label for="date">Datum</label>
+              <input id="date" name="date" type="date" required />
+              <p class="field-error" data-field-error></p>
+            </div>
+            <div class="field" data-field="guests">
+              <label for="guests">Gäste</label>
+              <input
+                id="guests"
+                name="guests"
+                type="number"
+                min="1"
+                max="200"
+                inputmode="numeric"
+                placeholder="30"
+                required
+              />
+              <p class="field-error" data-field-error></p>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="btn" data-submit-btn>
+              <span data-btn-label>Anfrage senden</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="success-view" data-success-view hidden>
+        <div class="success-badge">
+          <span class="check" aria-hidden="true">✓</span>
+          <span class="success-kicker">Anfrage erhalten</span>
+        </div>
+        <h3>Danke, <span data-success-name>dir</span> für deine Anfrage.</h3>
+        <p>
+          Ich schaue mir den <span data-success-date>gewählten Termin</span> an
+          und melde mich innerhalb von 48 Stunden mit einer Bestätigung und
+          den Formalitäten.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  type FieldName = "name" | "email" | "type" | "date" | "guests";
+
+  const card = document.querySelector<HTMLElement>("[data-contact-card]");
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+  const banner = document.querySelector<HTMLElement>("[data-error-banner]");
+  const successView = document.querySelector<HTMLElement>("[data-success-view]");
+  const formView = document.querySelector<HTMLElement>("[data-form-view]");
+  const submitBtn = document.querySelector<HTMLButtonElement>("[data-submit-btn]");
+  const btnLabel = document.querySelector<HTMLElement>("[data-btn-label]");
+
+  function fieldEl(name: FieldName) {
+    return form?.querySelector<HTMLElement>(`[data-field="${name}"]`) ?? null;
+  }
+
+  function setFieldError(name: FieldName, message: string | null) {
+    const el = fieldEl(name);
+    if (!el) return;
+    const msgEl = el.querySelector<HTMLElement>("[data-field-error]");
+    if (message) {
+      el.classList.add("has-error");
+      if (msgEl) msgEl.textContent = message;
+    } else {
+      el.classList.remove("has-error");
+      if (msgEl) msgEl.textContent = "";
+    }
+  }
+
+  function clearErrors() {
+    (["name", "email", "type", "date", "guests"] as FieldName[]).forEach((n) =>
+      setFieldError(n, null)
+    );
+    banner?.setAttribute("hidden", "");
+  }
+
+  function emailLooksValid(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function validate(data: FormData): Partial<Record<FieldName, string>> {
+    const errors: Partial<Record<FieldName, string>> = {};
+
+    const name = String(data.get("name") ?? "").trim();
+    if (!name) errors.name = "Bitte gib deinen Namen an.";
+
+    const email = String(data.get("email") ?? "").trim();
+    if (!email) errors.email = "Bitte gib deine E-Mail-Adresse an.";
+    else if (!emailLooksValid(email))
+      errors.email = "Diese E-Mail-Adresse sieht unvollständig aus.";
+
+    const type = String(data.get("type") ?? "");
+    if (!type) errors.type = "Bitte wähle ein Programm.";
+
+    const date = String(data.get("date") ?? "");
+    if (!date) errors.date = "Bitte wähle ein Datum.";
+
+    const guests = String(data.get("guests") ?? "");
+    const guestsNum = Number(guests);
+    if (!guests || !Number.isFinite(guestsNum) || guestsNum < 1)
+      errors.guests = "Bitte gib die Anzahl Gäste an.";
+
+    return errors;
+  }
+
+  function formatGermanDate(iso: string) {
+    const [y, m, d] = iso.split("-").map(Number);
+    if (!y || !m || !d) return iso;
+    const date = new Date(Date.UTC(y, m - 1, d));
+    return new Intl.DateTimeFormat("de-CH", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(date);
+  }
+
+  function showSuccess(name: string, dateIso: string) {
+    const firstName = name.trim().split(/\s+/)[0] || "dir";
+    const nameEl = document.querySelector("[data-success-name]");
+    const dateEl = document.querySelector("[data-success-date]");
+    if (nameEl) nameEl.textContent = firstName;
+    if (dateEl) dateEl.textContent = formatGermanDate(dateIso);
+
+    formView?.setAttribute("hidden", "");
+    successView?.removeAttribute("hidden");
+    card?.setAttribute("data-state", "success");
+    card?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function setLoading(isLoading: boolean) {
+    if (!submitBtn || !btnLabel) return;
+    submitBtn.disabled = isLoading;
+    btnLabel.textContent = isLoading ? "Sende …" : "Anfrage senden";
+  }
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearErrors();
+
+    const data = new FormData(form);
+    const errors = validate(data);
+
+    if (Object.keys(errors).length > 0) {
+      (Object.entries(errors) as [FieldName, string][]).forEach(([field, msg]) =>
+        setFieldError(field, msg)
+      );
+      banner?.removeAttribute("hidden");
+      const firstInvalid = form.querySelector<HTMLElement>(".has-error input, .has-error");
+      firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setLoading(true);
+
+    const payload = Object.fromEntries(data.entries());
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        showSuccess(String(payload.name), String(payload.date));
+      } else {
+        const body = await res.json().catch(() => null);
+        if (body?.errors) {
+          (Object.entries(body.errors) as [FieldName, string][]).forEach(
+            ([field, msg]) => setFieldError(field, msg)
+          );
+        }
+        banner?.removeAttribute("hidden");
+      }
+    } catch {
+      banner?.removeAttribute("hidden");
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
+
+<style>
+  .contact {
+    padding: clamp(70px, 10vw, 110px) 0 clamp(80px, 10vw, 120px);
+    background: var(--bg-dark);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .intro h2 {
+    margin: 0 0 24px;
+    font: 300 clamp(1.9rem, 1.3rem + 2vw, 2.875rem) / 1.14 var(--font-serif);
+    color: var(--text-cream);
+  }
+
+  .intro .lead {
+    margin: 0;
+    font: 300 17px/1.8 var(--font-sans);
+    color: var(--text-cream-dim);
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold-strong);
+    padding: clamp(28px, 4vw, 46px) clamp(24px, 4vw, 44px);
+  }
+
+  .hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .banner[hidden] {
+    display: none;
+  }
+
+  .banner {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border-left: 2px solid var(--red);
+    background: rgba(193, 88, 79, 0.1);
+    padding: 18px 20px;
+    margin-bottom: 34px;
+  }
+
+  .banner-icon {
+    color: var(--red-light);
+    font: 400 15px/1.4 var(--font-sans);
+  }
+
+  .banner-title {
+    margin: 0 0 6px;
+    font: 400 15px/1.4 var(--font-sans);
+    color: var(--text-cream);
+  }
+
+  .banner-text {
+    margin: 0;
+    font: 300 14px/1.6 var(--font-sans);
+    color: var(--text-cream-dim);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-bottom: 22px;
+  }
+
+  .field label,
+  .pillgroup legend {
+    display: block;
+    font: 400 11px/1 var(--font-sans);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-cream-faint);
+    margin-bottom: 11px;
+    padding: 0;
+  }
+
+  .field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line-on-dark);
+    padding-bottom: 13px;
+    font: 300 17px/1 var(--font-sans);
+    color: var(--text-cream);
+  }
+
+  .field input::placeholder {
+    color: rgba(243, 239, 230, 0.35);
+  }
+
+  .field input[type="date"] {
+    color-scheme: dark;
+  }
+
+  .field-error {
+    margin: 10px 0 0;
+    font: 300 13px/1.5 var(--font-sans);
+    color: var(--red-light);
+    min-height: 0;
+  }
+
+  .field:not(.has-error) .field-error,
+  .pillgroup:not(.has-error) .field-error {
+    display: none;
+  }
+
+  .field.has-error label,
+  .pillgroup.has-error legend {
+    color: var(--red-light);
+  }
+
+  .field.has-error input {
+    border-bottom-color: var(--red);
+    color: rgba(243, 239, 230, 0.65);
+  }
+
+  .pillgroup {
+    border: none;
+    padding: 0;
+    margin: 30px 0 0;
+  }
+
+  .pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pill input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .pill label {
+    display: inline-flex;
+    border: 1px solid var(--line-on-dark);
+    color: var(--text-cream-dim);
+    font: 400 14px/1 var(--font-sans);
+    padding: 13px 20px;
+    border-radius: 2px;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-bottom: 0;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+
+  .pill input:checked + label {
+    border-color: var(--gold);
+    background: rgba(201, 164, 92, 0.14);
+    color: var(--gold);
+  }
+
+  .pill input:focus-visible + label {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .submit-row {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .success-view {
+    padding: 4px 2px;
+  }
+
+  .success-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+
+  .check {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font: 400 16px/1 var(--font-sans);
+  }
+
+  .success-kicker {
+    font: 400 11px/1 var(--font-sans);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .success-view h3 {
+    margin: 0 0 16px;
+    font: 300 clamp(1.7rem, 1.3rem + 1.5vw, 2.375rem) / 1.15 var(--font-serif);
+    color: var(--text-cream);
+  }
+
+  .success-view p {
+    margin: 0;
+    font: 300 17px/1.75 var(--font-sans);
+    color: var(--text-cream-dim);
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .row {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .submit-row {
+      justify-content: stretch;
+    }
+
+    .submit-row .btn {
+      width: 100%;
+    }
+  }
+</style>
