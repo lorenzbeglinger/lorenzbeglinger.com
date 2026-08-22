@@ -1,0 +1,56 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Base title="Seite nicht gefunden — Lorenz Beglinger">
+  <Header />
+  <main class="not-found">
+    <p class="kicker">Fehler 404</p>
+    <h1>Diese Seite ist verschwunden.</h1>
+    <p class="text">
+      Das war nicht ich, versprochen. Vermutlich hat sich die Adresse
+      geändert.
+    </p>
+    <a href="/" class="btn">Zurück zur Startseite</a>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .not-found {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px clamp(22px, 6vw, 56px) 110px;
+    background: radial-gradient(
+      110% 90% at 50% 34%,
+      #3a3a3f 0%,
+      #1d1d23 48%,
+      #0b0b0e 100%
+    );
+  }
+
+  .kicker {
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    margin: 0 0 22px;
+    max-width: 620px;
+    font: 300 clamp(2.5rem, 1.9rem + 2.5vw, 3.875rem) / 1.06 var(--font-serif);
+    color: var(--text-cream);
+  }
+
+  .text {
+    margin: 0 0 44px;
+    max-width: 460px;
+    font: 300 18px/1.75 var(--font-sans);
+    color: var(--text-cream-dim);
+  }
+</style>

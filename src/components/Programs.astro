@@ -6,10 +6,10 @@ const programs = [
     img: "/uploads/magie-am-tisch.jpg",
     imgAlt: "Kartenkunststück am Tisch",
     imgPosition: "50% 62%",
-    text: "Ich komme an den Tisch, mitten ins Geschehen. Karten und Münzen — alles passiert direkt vor den Augen der Gäste und oft in Ihren eigenen Händen.",
-    duration: "45 – 60 Min.",
+    text: "Ich komme an deinem Familienfest direkt an den Tisch, mitten ins Geschehen. Karten und Münzen — alles passiert direkt vor den Augen der Gäste und oft in ihren eigenen Händen.",
+    duration: "30 Min.",
     guests: "10 – 25 Gäste",
-    price: "CHF 99",
+    price: "CHF 59",
   },
   {
     badge: "Kinder",
@@ -17,17 +17,21 @@ const programs = [
     img: "/uploads/kindershow.jpg",
     imgAlt: "Kinder an einem Geburtstagsfest",
     imgPosition: "50% 45%",
-    text: "Eine halbe Stunde, in der die Kinder die Hauptrolle spielen. Sie helfen mir beim zaubern — und die Erwachsenen lachen mindestens genauso viel.",
-    duration: "30 – 45 Min.",
+    text: "Eine halbe Stunde, in der die Kinder die Hauptrolle spielen. Sie helfen mir beim zaubern — und die Erwachsenen staunen und lachen mindestens genauso viel dabei.",
+    duration: "45 Min.",
     guests: "10 – 25 Gäste (ab 7 Jahren)",
-    price: "CHF 69",
+    price: "CHF 79",
   },
 ];
 ---
 
 <section class="programs" id="programme">
   <div class="container">
-    <h2>Zwei Programme</h2>
+    <h2>Mein Programm</h2>
+    <p class="intro">
+      Ich zaubere seit ich zehn Jahre alt bin und trete mit meinem Programm
+      vor allem an Kindergeburtstagen und Familienfesten auf.
+    </p>
     <div class="grid">
       {
         programs.map((p) => (
@@ -63,9 +67,16 @@ const programs = [
   }
 
   h2 {
-    margin: 0 0 clamp(32px, 5vw, 56px);
+    margin: 0 0 22px;
     font: 300 clamp(2.25rem, 1.6rem + 2vw, 3.25rem) / 1.1 var(--font-serif);
     color: var(--text-cream);
+  }
+
+  .intro {
+    margin: 0 0 clamp(32px, 5vw, 56px);
+    max-width: 620px;
+    font: 300 18px/1.7 var(--font-sans);
+    color: var(--text-cream-dim);
   }
 
   .grid {

@@ -1,42 +1,52 @@
 ---
-const links = [
+const navLinks = [
   { href: "#programme", label: "Programm" },
   { href: "#ueber-mich", label: "Über mich" },
 ];
+
+const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
 ---
 
 <header class="site-header" data-header>
-  <div class="bar container">
-    <a href="#top" class="brand" aria-label="Lorenz Beglinger — Startseite">
-      <img src="/logo-full.png" alt="Lorenz Beglinger" class="brand-full" />
-      <img src="/logo-mark.png" alt="Lorenz Beglinger" class="brand-mark" />
-    </a>
+  <div class="header-bg">
+    <div class="bar container">
+      <a href="#top" class="brand" aria-label="Lorenz Beglinger — Startseite">
+        <img src="/logo-full.png" alt="Lorenz Beglinger" class="brand-full" />
+        <img src="/logo-mark.png" alt="Lorenz Beglinger" class="brand-mark" />
+      </a>
 
-    <nav class="nav-desktop" aria-label="Hauptnavigation">
-      {links.map((l) => <a href={l.href}>{l.label}</a>)}
-      <a href="#anfrage" class="btn-outline">Anfragen</a>
-    </nav>
+      <nav class="nav-desktop" aria-label="Hauptnavigation">
+        {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a href="#anfrage" class="btn-outline">Anfragen</a>
+      </nav>
 
-    <button
-      class="menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-menu-toggle
-    >
-      <span class="visually-hidden">Menü öffnen</span>
-      <span class="menu-icon" aria-hidden="true">
-        <span></span>
-        <span></span>
-      </span>
-    </button>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="visually-hidden">Menü öffnen</span>
+        <span class="menu-icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
   </div>
 
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
     <nav aria-label="Mobile Navigation">
-      {links.map((l) => <a href={l.href} data-menu-link>{l.label}</a>)}
-      <a href="#anfrage" class="btn mobile-cta" data-menu-link>Termin anfragen</a>
+      {mobileLinks.map((l) => <a href={l.href} data-menu-link>{l.label}</a>)}
     </nav>
+    <div class="mobile-menu-foot">
+      <a href="#anfrage" class="btn mobile-cta" data-menu-link>Jetzt anfragen</a>
+      <div class="mobile-menu-legal">
+        <a href="/impressum" data-menu-link>Impressum</a>
+        <a href="/datenschutz" data-menu-link>Datenschutz</a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -80,6 +90,21 @@ const links = [
     left: 0;
     right: 0;
     z-index: 50;
+  }
+
+  .header-bg {
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 14, 0.92) 0%,
+      rgba(11, 11, 14, 0.55) 70%,
+      rgba(11, 11, 14, 0) 100%
+    );
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .menu-open .header-bg {
+    background: rgba(11, 11, 14, 0.98);
   }
 
   .bar {
@@ -200,20 +225,40 @@ const links = [
     .mobile-menu nav {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 110px var(--edge) 40px;
+      padding: 100px var(--edge) 0;
     }
 
     .mobile-menu a:not(.btn) {
-      font: 300 32px/1.3 var(--font-serif);
+      font: 300 34px/1.1 var(--font-serif);
       color: var(--text-cream);
-      padding: 6px 0;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line-on-dark-faint);
+    }
+
+    .mobile-menu-foot {
+      position: absolute;
+      left: var(--edge);
+      right: var(--edge);
+      bottom: 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
     .mobile-cta {
-      margin-top: 24px;
       width: 100%;
+    }
+
+    .mobile-menu-legal {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      font: 300 12px/1 var(--font-sans);
+      color: var(--text-cream-faint);
+    }
+
+    .mobile-menu-legal a {
+      text-decoration: underline;
     }
   }
 </style>

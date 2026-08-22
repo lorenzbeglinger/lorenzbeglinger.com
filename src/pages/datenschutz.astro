@@ -4,16 +4,60 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 ---
 
-<Base title="Datenschutzerklärung — Lorenz Beglinger">
+<Base title="Datenschutz — Lorenz Beglinger">
   <Header />
   <main class="legal">
     <div class="container">
-      <h1>Datenschutzerklärung</h1>
-      <p class="placeholder">
-        TODO: Datenschutzerklärung ergänzen — u.a. welche Daten das
-        Anfrageformular sammelt (Name, E-Mail, Datum, Gästezahl), wie sie per
-        E-Mail verarbeitet werden, und ob/welche Cookies eingesetzt werden.
-      </p>
+      <p class="kicker">Rechtliches</p>
+      <h1>Datenschutz</h1>
+
+      <div class="sections">
+        <div class="field">
+          <p class="label">Erklärung</p>
+          <p class="text">
+            Mit dieser Datenschutzerklärung informiere ich über die
+            Verarbeitung personenbezogener Daten im Rahmen des Betriebs
+            dieser Website. Diese Datenschutzerklärung gilt für die Nutzung
+            dieser Website und beschreibt, wie personenbezogene Daten
+            erhoben, verarbeitet und genutzt werden und welche Rechte die
+            betroffenen Personen haben und wie diese ausgeübt werden können.
+          </p>
+          <p class="text text-spaced">
+            Diese Website unterliegt dem Schweizer Datenschutzrecht und allen
+            anwendbaren ausländischen Datenschutzgesetzen, insbesondere denen
+            der Europäischen Union (EU) mit der Datenschutz-Grundverordnung
+            (DSGVO).
+          </p>
+          <p class="text text-spaced">
+            Diese Website dient ausschliesslich allgemeinen
+            Informationszwecken. Sie sollte nicht als Beratung herangezogen
+            oder als Grundlage für bestimmte Handlungen oder Entscheidungen
+            verwendet werden. Nutzer der Website sollten sich spezifisch
+            beraten lassen, bevor sie Massnahmen in Bezug auf die darin
+            behandelten Themen ergreifen. Nichts auf dieser Website ist als
+            Begründung einer Kundenbeziehung oder als Beratung in einer
+            bestimmten Angelegenheit zu verstehen.
+          </p>
+        </div>
+
+        <div class="field">
+          <p class="label">Kontakt</p>
+          <p class="text">Verantwortlich für die Verarbeitung personenbezogener Daten ist:</p>
+          <p class="text text-spaced">
+            <strong>Lorenz Beglinger</strong><br />
+            vertreten durch Michael Beglinger<br />
+            Pfaffenmattweg 39b<br />
+            4132 Muttenz<br />
+            Schweiz
+          </p>
+          <p class="text text-spaced">Datenschutzanfragen bitte direkt an:</p>
+          <p class="text">
+            <a href="mailto:dataprivacy@beglingerpartners.com" class="link"
+              >datenschutz@lorenzbeglinger.com</a
+            >
+          </p>
+        </div>
+      </div>
     </div>
   </main>
   <Footer />
@@ -25,16 +69,51 @@ import Footer from "../components/Footer.astro";
     min-height: 60vh;
   }
 
-  h1 {
-    font: 300 clamp(2.25rem, 1.6rem + 2vw, 3.25rem) / 1.1 var(--font-serif);
-    color: var(--text-cream);
-    margin: 0 0 24px;
+  .container {
+    max-width: 680px;
+    margin: 0;
+    padding-left: clamp(22px, 6vw, 56px);
+    padding-right: clamp(22px, 6vw, 56px);
   }
 
-  .placeholder {
+  .kicker {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    margin: 0 0 20px;
+    font: 300 clamp(2.5rem, 1.9rem + 2vw, 3.5rem) / 1.06 var(--font-serif);
+    color: var(--text-cream);
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .label {
+    margin: 0 0 14px;
+    font: 400 11px/1 var(--font-sans);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-cream-faint);
+  }
+
+  .text {
+    margin: 0;
     font: 300 17px/1.8 var(--font-sans);
     color: var(--text-cream-dim);
-    border-left: 2px solid var(--gold);
-    padding-left: 18px;
+  }
+
+  .text-spaced {
+    margin-top: 18px;
+  }
+
+  .link {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-gold-strong);
   }
 </style>

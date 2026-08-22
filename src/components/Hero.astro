@@ -17,12 +17,16 @@
       <em>Direkt vor deinen Augen.</em>
     </h1>
     <p class="lead">
-      Ich bringe ein wenig Magie an dein Geburtstagsfest oder deine
-      Familienfeier. Keine Bühne nötig — nur ein Wohnzimmer und ein paar
-      Gäste, die kurz vergessen wie die Welt funktioniert.
+      Ich heisse Lorenz Beglinger und bringe ein wenig Magie an dein
+      Geburtstagsfest oder deine Familienfeier. Keine Bühne nötig — nur ein
+      Wohnzimmer und ein paar Gäste, die kurz vergessen wollen wie die Welt
+      funktioniert.
     </p>
     <div class="hero-actions">
-      <a href="#anfrage" class="btn">Termin anfragen</a>
+      <a href="#anfrage" class="btn">Jetzt anfragen</a>
+      <a href="#ueber-mich" class="hero-link">
+        Über mich<span aria-hidden="true">↓</span>
+      </a>
     </div>
   </div>
 </section>
@@ -93,8 +97,9 @@
       180deg,
       rgba(11, 11, 14, 0.55) 0%,
       rgba(11, 11, 14, 0) 26%,
-      rgba(11, 11, 14, 0) 62%,
-      rgba(11, 11, 14, 0.92) 100%
+      rgba(11, 11, 14, 0) 55%,
+      rgba(11, 11, 14, 0.86) 88%,
+      #0b0b0e 100%
     );
   }
 
@@ -125,9 +130,33 @@
 
   .hero-actions {
     display: flex;
-    gap: 16px;
+    gap: 28px;
     margin-top: clamp(30px, 4vw, 44px);
     align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-cream-dim);
+    font: 400 15px/1 var(--font-sans);
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-gold-strong);
+    padding-bottom: 7px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .hero-link:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .hero-link span {
+    font-size: 16px;
+    line-height: 1;
   }
 
   @media (max-width: 900px) {

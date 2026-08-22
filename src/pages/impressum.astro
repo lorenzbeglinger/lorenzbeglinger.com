@@ -8,11 +8,80 @@ import Footer from "../components/Footer.astro";
   <Header />
   <main class="legal">
     <div class="container">
+      <p class="kicker">Rechtliches</p>
       <h1>Impressum</h1>
-      <p class="placeholder">
-        TODO: Angaben gemäss Art. 3 UWG ergänzen — Name, Adresse, Kontakt und
-        ggf. UID-Nummer.
-      </p>
+
+      <div class="sections">
+        <div class="field">
+          <p class="label">Verantwortlich für den Inhalt</p>
+          <p class="text">
+            Lorenz Beglinger<br />
+            vertreten durch Michael Beglinger<br />
+            Pfaffenmattweg 39b<br />
+            4132 Muttenz<br />
+            Schweiz
+          </p>
+        </div>
+
+        <div class="field">
+          <p class="label">Kontakt</p>
+          <p class="text">
+            <a href="mailto:hallo@lorenzbeglinger.com" class="link"
+              >hallo@lorenzbeglinger.com</a
+            >
+          </p>
+        </div>
+
+        <div class="field">
+          <p class="label">Informationen</p>
+          <p class="text">
+            Diese Website dient ausschliesslich allgemeinen
+            Informationszwecken. Sie sollte weder als Beratung herangezogen
+            noch als Grundlage für bestimmte Handlungen oder Entscheidungen
+            verwendet werden. Nutzer der Website sollten sich vor dem
+            Ergreifen von Massnahmen in Bezug auf die darin behandelten Themen
+            spezifisch beraten lassen. Nichts auf dieser Website ist als
+            Begründung einer Kundenbeziehung oder als Beratung in einer
+            bestimmten Angelegenheit zu verstehen.
+          </p>
+
+          <p class="label label-spaced">Haftung</p>
+          <p class="text">
+            Ich habe alle Anstrengungen unternommen, um sicherzustellen, dass
+            die auf dieser Website enthaltenen Informationen korrekt sind.
+            Ich übernehme jedoch keine Verantwortung und keine Haftung für
+            Ungenauigkeiten, Fehler oder Auslassungen im Inhalt dieser Website
+            oder für die Ergebnisse ihrer Nutzung. Links werden nur zu
+            Informationszwecken bereitgestellt und werden auf eigenes Risiko
+            des Nutzers aufgerufen.
+          </p>
+        </div>
+
+        <div class="field">
+          <p class="label">Urheberrecht</p>
+          <p class="text">
+            Alle Inhalte, einschliesslich Fotos, Videos und Designs, die Teil
+            dieser Website sind, sind durch Urheberrechte und/oder andere
+            Rechte an geistigem Eigentum geschützt, und alle Rechte bleiben
+            dem Rechteinhaber vorbehalten. Die unbefugte Vervielfältigung,
+            Verbreitung oder Weiterverbreitung der auf dieser Website
+            enthaltenen Materialien ist untersagt.
+          </p>
+
+          <p class="label label-spaced">Cookies</p>
+          <p class="text">
+            Cookies sind kleine Textdateien, die beim Besuch dieser Website
+            auf Ihr Gerät heruntergeladen werden. Cookies werden insbesondere
+            dazu verwendet, die Website zu verbessern, indem sie statistische
+            Informationen über die Interaktion der Nutzer mit der Website,
+            die Anzahl der Besucher der Website und ähnliche Informationen
+            liefern. Sie können Ihre Browser-Einstellungen ändern, um Cookies
+            zu löschen und zu blockieren. Wenn Sie diese Website ohne
+            Änderung Ihrer Einstellungen weiter nutzen, stimmen Sie der
+            Verwendung von Cookies zu.
+          </p>
+        </div>
+      </div>
     </div>
   </main>
   <Footer />
@@ -24,16 +93,50 @@ import Footer from "../components/Footer.astro";
     min-height: 60vh;
   }
 
-  h1 {
-    font: 300 clamp(2.25rem, 1.6rem + 2vw, 3.25rem) / 1.1 var(--font-serif);
-    color: var(--text-cream);
-    margin: 0 0 24px;
+  .container {
+    max-width: 680px;
+    margin: 0;
+    padding-left: clamp(22px, 6vw, 56px);
+    padding-right: clamp(22px, 6vw, 56px);
   }
 
-  .placeholder {
+  .kicker {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    margin: 0 0 46px;
+    font: 300 clamp(2.5rem, 1.9rem + 2vw, 3.5rem) / 1.06 var(--font-serif);
+    color: var(--text-cream);
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .label {
+    margin: 0 0 14px;
+    font: 400 11px/1 var(--font-sans);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-cream-faint);
+  }
+
+  .label-spaced {
+    margin-top: 31px;
+  }
+
+  .text {
+    margin: 0;
     font: 300 17px/1.8 var(--font-sans);
     color: var(--text-cream-dim);
-    border-left: 2px solid var(--gold);
-    padding-left: 18px;
+  }
+
+  .link {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-gold-strong);
   }
 </style>
