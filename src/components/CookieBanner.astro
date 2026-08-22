@@ -70,7 +70,7 @@
 <style>
   .cookie-banner {
     position: fixed;
-    right: 24px;
+    right: max(24px, calc((100vw - var(--container)) / 2 + 24px));
     bottom: 24px;
     z-index: 80;
     width: 340px;

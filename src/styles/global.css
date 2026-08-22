@@ -60,6 +60,11 @@ button {
   padding-right: var(--edge);
 }
 
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
 .no-scroll {
   overflow: hidden;
 }
