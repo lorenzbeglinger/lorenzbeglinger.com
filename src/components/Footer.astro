@@ -4,13 +4,18 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container inner">
-    <span class="legal">© {year} Lorenz Beglinger</span>
+    <span class="legal">© <span id="copyright-year">{year}</span> Lorenz Beglinger</span>
     <a href="/#top"><img src="/logo-mark.png" alt="" class="mark" /></a>
     <span class="links">
       <a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a>
     </span>
   </div>
 </footer>
+
+<script>
+  const el = document.getElementById("copyright-year");
+  if (el) el.textContent = String(new Date().getFullYear());
+</script>
 
 <style>
   .site-footer {
