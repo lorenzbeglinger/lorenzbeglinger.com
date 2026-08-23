@@ -85,9 +85,20 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
     }),
   });
 
-  const result = (await web3formsRes.json().catch(() => null)) as { success?: boolean } | null;
+  const rawBody = await web3formsRes.text();
+  let result: { success?: boolean; message?: string } | null = null;
+  try {
+    result = JSON.parse(rawBody);
+  } catch {
+    /* non-JSON response, logged below */
+  }
 
   if (!web3formsRes.ok || !result?.success) {
+    console.error(
+      "web3forms submission failed",
+      web3formsRes.status,
+      result?.message ?? rawBody.slice(0, 500)
+    );
     return Response.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 
