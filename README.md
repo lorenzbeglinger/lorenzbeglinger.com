@@ -49,14 +49,26 @@ If you'd rather use a different frame as the poster, or want the video re-encode
    for submissions is whatever you configured when you created the Access Key
    (e.g. `anfragen@lorenzbeglinger.com`) — there's no separate "to" setting
    here, it's tied to the key itself.
-2. In the Cloudflare dashboard, on this Worker's settings → **Variables and
-   Secrets**, add:
-   - `WEB3FORMS_ACCESS_KEY` — your Access Key (add as **secret**)
+2. Set it as a secret on the live Worker via **the CLI, not the dashboard UI**
+   (see the warning below for why):
+   ```bash
+   pnpm dlx wrangler secret put WEB3FORMS_ACCESS_KEY --name lorenzbeglinger-website
+   ```
+   It'll prompt you to log in (if needed) and then to paste the Access Key.
 
 Without it set, `/api/contact` returns a 500 and the form shows the error
 banner. The submitter's own address is sent as `email`, which Web3Forms uses
 as the Reply-To automatically — replying to the notification email goes
 straight back to them.
+
+> **⚠️ Dashboard "Variables and Secrets" don't work for this Worker.** This
+> project's Cloudflare deploy command is `npx wrangler deploy`, run fresh by
+> Cloudflare's CI on every push. Confirmed by debugging a live failure: values
+> added through the dashboard's Variables and Secrets UI (both `secret`- and
+> plain `variable`-typed) never reached the running Worker's `env` — only
+> `wrangler secret put` (or a `[vars]` entry in `wrangler.toml` for
+> non-sensitive values) actually persists across those CI-triggered deploys.
+> Always use the CLI for secrets on this project.
 
 ## Deploying (GitHub + Cloudflare)
 
