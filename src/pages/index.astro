@@ -15,6 +15,9 @@ import CookieBanner from "../components/CookieBanner.astro";
     <main>
       <Hero />
       <Programs />
+      <div class="cta-strip">
+        <a href="#anfrage" class="btn">Jetzt anfragen</a>
+      </div>
       <About />
       <ContactForm />
     </main>
@@ -22,3 +25,13 @@ import CookieBanner from "../components/CookieBanner.astro";
   </div>
   <CookieBanner />
 </Base>
+
+<style>
+  .cta-strip {
+    display: flex;
+    justify-content: center;
+    padding: 56px 0;
+    background: var(--bg-dark);
+    border-top: 1px solid var(--border-gold-strong);
+  }
+</style>
