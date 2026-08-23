@@ -12,7 +12,6 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
     <div class="bar container">
       <a href="#top" class="brand" aria-label="Lorenz Beglinger — Startseite">
         <img src="/logo-full.png" alt="Lorenz Beglinger" class="brand-full" />
-        <img src="/logo-mark.png" alt="Lorenz Beglinger" class="brand-mark" />
       </a>
 
       <nav class="nav-desktop" aria-label="Hauptnavigation">
@@ -64,10 +63,6 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
     </nav>
     <div class="mobile-menu-foot">
       <a href="#anfrage" class="btn mobile-cta" data-menu-link>Jetzt anfragen</a>
-      <div class="mobile-menu-legal">
-        <a href="/impressum" data-menu-link>Impressum</a>
-        <a href="/datenschutz" data-menu-link>Datenschutz</a>
-      </div>
     </div>
   </div>
 </header>
@@ -154,12 +149,6 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
     width: auto;
   }
 
-  .brand-mark {
-    display: none;
-    height: 34px;
-    width: auto;
-  }
-
   .nav-desktop {
     display: flex;
     align-items: center;
@@ -217,11 +206,7 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
     }
 
     .brand-full {
-      display: none;
-    }
-
-    .brand-mark {
-      display: block;
+      height: 34px;
     }
 
     .nav-desktop {
@@ -342,18 +327,6 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
 
     .mobile-cta {
       width: 100%;
-    }
-
-    .mobile-menu-legal {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      font: 300 12px/1 var(--font-sans);
-      color: var(--text-cream-faint);
-    }
-
-    .mobile-menu-legal a {
-      text-decoration: underline;
     }
   }
 </style>
