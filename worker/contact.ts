@@ -1,9 +1,5 @@
-import { Resend } from "resend";
-
 export interface ContactEnv {
-  RESEND_API_KEY: string;
-  CONTACT_TO_EMAIL: string;
-  CONTACT_FROM_EMAIL: string;
+  WEB3FORMS_ACCESS_KEY: string;
 }
 
 type FieldName = "name" | "email" | "type" | "date" | "guests";
@@ -16,15 +12,6 @@ const PROGRAM_LABELS: Record<string, string> = {
 
 function emailLooksValid(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }
 
 function validate(body: Record<string, unknown>) {
@@ -79,27 +66,28 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
   const date = String(body.date);
   const guests = String(body.guests);
 
-  if (!env.RESEND_API_KEY || !env.CONTACT_TO_EMAIL || !env.CONTACT_FROM_EMAIL) {
+  if (!env.WEB3FORMS_ACCESS_KEY) {
     return Response.json({ ok: false, error: "not_configured" }, { status: 500 });
   }
 
-  const resend = new Resend(env.RESEND_API_KEY);
-
-  const { error } = await resend.emails.send({
-    from: env.CONTACT_FROM_EMAIL,
-    to: env.CONTACT_TO_EMAIL,
-    replyTo: email,
-    subject: `Neue Anfrage von ${name} — ${date}`,
-    html: `
-      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-      <p><strong>E-Mail:</strong> ${escapeHtml(email)}</p>
-      <p><strong>Programm:</strong> ${escapeHtml(PROGRAM_LABELS[type] ?? type)}</p>
-      <p><strong>Datum:</strong> ${escapeHtml(date)}</p>
-      <p><strong>Gäste:</strong> ${escapeHtml(guests)}</p>
-    `,
+  const web3formsRes = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      access_key: env.WEB3FORMS_ACCESS_KEY,
+      subject: `Neue Anfrage von ${name} — ${date}`,
+      from_name: name,
+      name,
+      email,
+      Programm: PROGRAM_LABELS[type] ?? type,
+      Datum: date,
+      Gäste: guests,
+    }),
   });
 
-  if (error) {
+  const result = (await web3formsRes.json().catch(() => null)) as { success?: boolean } | null;
+
+  if (!web3formsRes.ok || !result?.success) {
     return Response.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 

@@ -7,7 +7,7 @@ worker also handles the contact form's `/api/contact` endpoint.
 
 - [Astro](https://astro.build) (static output, no client framework — interactivity is plain `<script>` per component)
 - A Cloudflare Worker (`worker/index.ts`) that serves the built site as static
-  assets and handles `POST /api/contact`, emailing submissions via [Resend](https://resend.com)
+  assets and handles `POST /api/contact`, emailing submissions via [Web3Forms](https://web3forms.com)
 
 Note: this project's Cloudflare dashboard deploy command runs `wrangler
 deploy` (not `wrangler pages deploy`), so it's set up as a plain Worker with
@@ -43,17 +43,20 @@ If you'd rather use a different frame as the poster, or want the video re-encode
 
 `src/pages/impressum.astro` and `src/pages/datenschutz.astro` are stubs with `TODO` placeholders — fill in real Impressum (Art. 3 UWG) and Datenschutzerklärung text before launch.
 
-## Contact form → email setup (Resend)
+## Contact form → email setup (Web3Forms)
 
-1. Create a free account at [resend.com](https://resend.com).
-2. Verify a sending domain (or subdomain, e.g. `mail.lorenzbeglinger.ch`) — needed so `CONTACT_FROM_EMAIL` isn't rejected as spam.
-3. Create an API key.
-4. In the Cloudflare dashboard, on this Worker's settings → **Variables and Secrets**, add:
-   - `RESEND_API_KEY` — the key from step 3 (add as **secret**)
-   - `CONTACT_TO_EMAIL` — the inbox that should receive Anfragen
-   - `CONTACT_FROM_EMAIL` — a verified sender address on your domain, e.g. `anfrage@lorenzbeglinger.ch`
+1. In your [Web3Forms](https://web3forms.com) dashboard, the destination inbox
+   for submissions is whatever you configured when you created the Access Key
+   (e.g. `anfragen@lorenzbeglinger.com`) — there's no separate "to" setting
+   here, it's tied to the key itself.
+2. In the Cloudflare dashboard, on this Worker's settings → **Variables and
+   Secrets**, add:
+   - `WEB3FORMS_ACCESS_KEY` — your Access Key (add as **secret**)
 
-Without these three variables set, `/api/contact` returns a 500 and the form shows the error banner.
+Without it set, `/api/contact` returns a 500 and the form shows the error
+banner. The submitter's own address is sent as `email`, which Web3Forms uses
+as the Reply-To automatically — replying to the notification email goes
+straight back to them.
 
 ## Deploying (GitHub + Cloudflare)
 
@@ -62,7 +65,7 @@ Without these three variables set, `/api/contact` returns a 500 and the form sho
 3. Build settings:
    - Build command: `pnpm build`
    - Deploy command: `npx wrangler deploy` (this is what actually reads `wrangler.toml`'s `main` + `[assets]` config)
-4. Add the three environment variables above.
+4. Add the environment variable above.
 5. Deploy. Cloudflare will auto-build on every push to `main`.
 
 Alternatively, deploy from the CLI once `wrangler` is authenticated (`pnpm dlx wrangler login`):
@@ -92,5 +95,5 @@ src/
     datenschutz.astro
 worker/
   index.ts                  fetch handler: routes /api/contact, else serves ASSETS
-  contact.ts                 validation + Resend send logic
+  contact.ts                 validation + Web3Forms send logic
 ```

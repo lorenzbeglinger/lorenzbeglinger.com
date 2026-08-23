@@ -1,6 +1,4 @@
-# Copy to .dev.vars for local `pnpm pages:dev` testing.
-# In production, set these as Cloudflare Pages environment variables/secrets instead.
+# Copy to .dev.vars for local `pnpm worker:dev` testing.
+# In production, set this as a Cloudflare Worker secret instead.
 
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-CONTACT_TO_EMAIL=you@example.com
-CONTACT_FROM_EMAIL=anfrage@yourdomain.ch
+WEB3FORMS_ACCESS_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
