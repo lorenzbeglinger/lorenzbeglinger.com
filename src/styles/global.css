@@ -138,6 +138,12 @@ select:focus-visible {
   padding: 12px 22px;
   border-radius: 2px;
   background: transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--bg-dark);
 }
 
 .btn[disabled] {
