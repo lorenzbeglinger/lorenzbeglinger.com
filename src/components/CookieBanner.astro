@@ -28,8 +28,7 @@
 
   function reserveSpace() {
     if (!banner) return;
-    const space = banner.offsetHeight + 24;
-    document.documentElement.style.setProperty("--cookie-banner-space", `${space}px`);
+    document.documentElement.style.setProperty("--cookie-banner-space", "40px");
     document.body.classList.add("has-cookie-banner");
   }
 
