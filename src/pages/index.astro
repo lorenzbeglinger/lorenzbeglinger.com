@@ -9,7 +9,18 @@ import Footer from "../components/Footer.astro";
 import CookieBanner from "../components/CookieBanner.astro";
 ---
 
-<Base title="Lorenz Beglinger — Zauberkunst für Kindergeburtstage & Familienfeste">
+<Base title="Zauberer für Kindergeburtstage in Muttenz und Umgebung | Lorenz Beglinger">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Lorenz Beglinger – Zauberkunst",
+      "description": "Zauberer für Kindergeburtstage und Familienfeste in Muttenz und Umgebung.",
+      "url": "https://www.lorenzbeglinger.com",
+      "areaServed": ["Muttenz", "Basel", "Arlesheim", "Münchenstein", "Aarau", "Rheinfelden", "Aesch", "Grellingen", "Dornach"],
+      "priceRange": "CHF 59–79"
+    })} />
+  </Fragment>
   <Header />
   <div class="page-shell">
     <main>

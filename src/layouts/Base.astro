@@ -8,7 +8,7 @@ interface Props {
 
 const {
   title,
-  description = "Zauberkunst für Kindergeburtstage und Familienfeste in der Nordwestschweiz — Nahaufnahme-Magie von Lorenz Beglinger.",
+  description = "Zauberer für Kindergeburtstage und Familienfeste in Muttenz und Umgebung. Nahaufnahme-Magie zum Staunen — jetzt Termin anfragen.",
 } = Astro.props;
 ---
 
@@ -32,6 +32,7 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/logo-full.png" />
+    <slot name="head" />
   </head>
   <body>
     <slot />
