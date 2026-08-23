@@ -37,6 +37,28 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
   </div>
 
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+    <img
+      src="/uploads/LB-Hero.jpg"
+      alt=""
+      class="mobile-menu-bg"
+      aria-hidden="true"
+    />
+    <div class="mobile-menu-head container">
+      <a href="#top" class="mobile-menu-brand" aria-label="Lorenz Beglinger — Startseite" data-menu-link>
+        <img src="/logo-full.png" alt="Lorenz Beglinger" />
+      </a>
+      <button
+        type="button"
+        class="menu-close"
+        aria-label="Menü schliessen"
+        data-menu-close
+      >
+        <span class="close-icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
     <nav aria-label="Mobile Navigation">
       {mobileLinks.map((l) => <a href={l.href} data-menu-link>{l.label}</a>)}
     </nav>
@@ -52,11 +74,13 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const closeBtn = document.querySelector<HTMLButtonElement>("[data-menu-close]");
   const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
   const header = document.querySelector<HTMLElement>("[data-header]");
 
   function closeMenu() {
     toggle?.setAttribute("aria-expanded", "false");
+    toggle?.removeAttribute("tabindex");
     menu?.classList.remove("is-open");
     header?.classList.remove("menu-open");
     document.body.classList.remove("no-scroll");
@@ -64,15 +88,19 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
 
   function openMenu() {
     toggle?.setAttribute("aria-expanded", "true");
+    toggle?.setAttribute("tabindex", "-1");
     menu?.classList.add("is-open");
     header?.classList.add("menu-open");
     document.body.classList.add("no-scroll");
+    closeBtn?.focus();
   }
 
   toggle?.addEventListener("click", () => {
     const isOpen = toggle.getAttribute("aria-expanded") === "true";
     isOpen ? closeMenu() : openMenu();
   });
+
+  closeBtn?.addEventListener("click", closeMenu);
 
   menu?.querySelectorAll<HTMLAnchorElement>("[data-menu-link]").forEach((a) => {
     a.addEventListener("click", closeMenu);
@@ -209,7 +237,13 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
       position: fixed;
       inset: 0;
       top: 0;
-      background: rgba(11, 11, 14, 0.98);
+      overflow: hidden;
+      background: radial-gradient(
+        120% 95% at 72% 20%,
+        #3a3a3f 0%,
+        #1d1d23 45%,
+        #0b0b0e 100%
+      );
       opacity: 0;
       pointer-events: none;
       transform: translateY(-8px);
@@ -222,10 +256,71 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
       transform: translateY(0);
     }
 
+    .mobile-menu-bg {
+      position: absolute;
+      top: 0;
+      right: -14%;
+      height: 78%;
+      width: 110%;
+      object-fit: cover;
+      object-position: 52% 6%;
+      opacity: 0.18;
+      filter: saturate(0.4);
+      -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+    }
+
+    .mobile-menu-head {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .mobile-menu-brand {
+      display: block;
+      line-height: 0;
+    }
+
+    .mobile-menu-brand img {
+      height: 34px;
+      width: auto;
+    }
+
+    .menu-close {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .close-icon span {
+      position: absolute;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .close-icon span:first-child {
+      transform: rotate(45deg);
+    }
+
+    .close-icon span:last-child {
+      transform: rotate(-45deg);
+    }
+
     .mobile-menu nav {
+      position: relative;
       display: flex;
       flex-direction: column;
-      padding: 100px var(--edge) 0;
+      padding: 30px var(--edge) 0;
     }
 
     .mobile-menu a:not(.btn) {
