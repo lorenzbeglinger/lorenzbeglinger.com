@@ -14,7 +14,7 @@ import Footer from "../components/Footer.astro";
 
       <div class="sections">
         <div class="field">
-          <p class="label">Erklärung</p>
+          <p class="label label-spaced">Erklärung</p>
           <p class="text">
             Mit dieser Datenschutzerklärung informiere ich über die
             Verarbeitung personenbezogener Daten im Rahmen des Betriebs
@@ -42,7 +42,7 @@ import Footer from "../components/Footer.astro";
         </div>
 
         <div class="field">
-          <p class="label">Kontakt</p>
+          <p class="label label-spaced">Kontakt</p>
           <p class="text">Verantwortlich für die Verarbeitung personenbezogener Daten ist:</p>
           <p class="text text-spaced">
             <strong>Lorenz Beglinger</strong><br />
@@ -51,7 +51,8 @@ import Footer from "../components/Footer.astro";
             4132 Muttenz<br />
             Schweiz
           </p>
-          <p class="text text-spaced">Datenschutzanfragen bitte direkt an:</p>
+          <p class="label label-spaced">Datenschutzanfragen</p>
+          <p class="text">Datenschutzanfragen bitte direkt an:</p>
           <p class="text">
             <a href="mailto:dataprivacy@beglingerpartners.com" class="link"
               >datenschutz@lorenzbeglinger.com</a
@@ -101,6 +102,10 @@ import Footer from "../components/Footer.astro";
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-cream-faint);
+  }
+
+  .label-spaced {
+    margin-top: 30px;
   }
 
   .text {
