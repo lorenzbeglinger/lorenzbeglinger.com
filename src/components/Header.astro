@@ -1,22 +1,22 @@
 ---
 const navLinks = [
-  { href: "#programme", label: "Programm" },
-  { href: "#ueber-mich", label: "Über mich" },
+  { href: "/#programme", label: "Programm" },
+  { href: "/#ueber-mich", label: "Über mich" },
 ];
 
-const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
+const mobileLinks = [...navLinks, { href: "/#anfrage", label: "Anfragen" }];
 ---
 
 <header class="site-header" data-header>
   <div class="header-bg">
     <div class="bar container">
-      <a href="#top" class="brand" aria-label="Lorenz Beglinger — Startseite">
+      <a href="/#top" class="brand" aria-label="Lorenz Beglinger — Startseite">
         <img src="/logo-full.png" alt="Lorenz Beglinger" class="brand-full" />
       </a>
 
       <nav class="nav-desktop" aria-label="Hauptnavigation">
         {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
-        <a href="#anfrage" class="btn-outline">Anfragen</a>
+        <a href="/#anfrage" class="btn-outline">Anfragen</a>
       </nav>
 
       <button
@@ -43,7 +43,7 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
       aria-hidden="true"
     />
     <div class="mobile-menu-head container">
-      <a href="#top" class="mobile-menu-brand" aria-label="Lorenz Beglinger — Startseite" data-menu-link>
+      <a href="/#top" class="mobile-menu-brand" aria-label="Lorenz Beglinger — Startseite" data-menu-link>
         <img src="/logo-full.png" alt="Lorenz Beglinger" />
       </a>
       <button
@@ -62,7 +62,7 @@ const mobileLinks = [...navLinks, { href: "#anfrage", label: "Anfragen" }];
       {mobileLinks.map((l) => <a href={l.href} data-menu-link>{l.label}</a>)}
     </nav>
     <div class="mobile-menu-foot">
-      <a href="#anfrage" class="btn mobile-cta" data-menu-link>Jetzt anfragen</a>
+      <a href="/#anfrage" class="btn mobile-cta" data-menu-link>Jetzt anfragen</a>
     </div>
   </div>
 </header>
