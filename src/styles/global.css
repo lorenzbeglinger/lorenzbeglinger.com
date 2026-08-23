@@ -106,11 +106,13 @@ body.has-cookie-banner {
   padding: 19px 34px;
   border-radius: 2px;
   border: none;
-  transition: filter 0.15s ease, transform 0.15s ease;
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(201, 164, 92, 0.35);
 }
 
 .btn:active {
