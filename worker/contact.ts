@@ -67,7 +67,13 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
   const guests = String(body.guests);
 
   if (!env.WEB3FORMS_ACCESS_KEY) {
-    return Response.json({ ok: false, error: "not_configured" }, { status: 500 });
+    // TEMPORARY diagnostic: lists bound env var NAMES only (never values) so
+    // we can see what's actually reaching the Worker at runtime. Remove once
+    // the WEB3FORMS_ACCESS_KEY visibility issue is resolved.
+    return Response.json(
+      { ok: false, error: "not_configured", envKeysSeen: Object.keys(env) },
+      { status: 500 }
+    );
   }
 
   const web3formsRes = await fetch("https://api.web3forms.com/submit", {
