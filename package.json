@@ -7,8 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "worker:dev": "astro build && pnpm dlx wrangler dev",
-    "worker:deploy": "astro build && pnpm dlx wrangler deploy"
+    "pages:deploy": "astro build && pnpm dlx wrangler pages deploy dist"
   },
   "keywords": [],
   "author": "",

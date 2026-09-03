@@ -132,6 +132,19 @@ const options = [
 <script>
   type FieldName = "name" | "email" | "type" | "date" | "guests";
 
+  // Web3Forms access keys are meant to be public — they're tied to the
+  // destination inbox and rate-limited, not a secret. Their free plan only
+  // accepts submissions made directly from the browser (server-to-server
+  // calls get a 403), so this form posts straight to their API with no
+  // backend involved. Get your key at https://web3forms.com.
+  const WEB3FORMS_ACCESS_KEY = "440b12d6-6c80-4937-a11c-acdccab9ff29";
+
+  const PROGRAM_LABELS: Record<string, string> = {
+    tisch: "Magie am Tisch",
+    kindershow: "Kindershow",
+    beides: "Beides",
+  };
+
   const card = document.querySelector<HTMLElement>("[data-contact-card]");
   const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
   const banner = document.querySelector<HTMLElement>("[data-error-banner]");
@@ -229,6 +242,14 @@ const options = [
     clearErrors();
 
     const data = new FormData(form);
+
+    // Honeypot: bots fill hidden fields. Pretend success without sending.
+    const honeypot = String(data.get("website") ?? "").trim();
+    if (honeypot !== "") {
+      showSuccess(String(data.get("name") ?? ""), String(data.get("date") ?? ""));
+      return;
+    }
+
     const errors = validate(data);
 
     if (Object.keys(errors).length > 0) {
@@ -243,24 +264,34 @@ const options = [
 
     setLoading(true);
 
-    const payload = Object.fromEntries(data.entries());
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const type = String(data.get("type") ?? "");
+    const date = String(data.get("date") ?? "");
+    const guests = String(data.get("guests") ?? "");
+
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      subject: `Neue Anfrage von ${name} — ${date}`,
+      from_name: name,
+      name,
+      email,
+      Programm: PROGRAM_LABELS[type] ?? type,
+      Datum: date,
+      Gäste: guests,
+    };
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
+      const result = await res.json().catch(() => null);
 
-      if (res.ok) {
-        showSuccess(String(payload.name), String(payload.date));
+      if (res.ok && result?.success) {
+        showSuccess(name, date);
       } else {
-        const body = await res.json().catch(() => null);
-        if (body?.errors) {
-          (Object.entries(body.errors) as [FieldName, string][]).forEach(
-            ([field, msg]) => setFieldError(field, msg)
-          );
-        }
         banner?.removeAttribute("hidden");
       }
     } catch {

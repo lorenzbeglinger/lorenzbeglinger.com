@@ -1,31 +1,34 @@
 # Lorenz Beglinger — Website
 
-Astro static site, deployed as a Cloudflare Worker with static assets. The
-worker also handles the contact form's `/api/contact` endpoint.
+Fully static Astro site, deployed on Cloudflare Pages. No backend: the
+contact form submits directly from the browser to Web3Forms.
 
 ## Stack
 
 - [Astro](https://astro.build) (static output, no client framework — interactivity is plain `<script>` per component)
-- A Cloudflare Worker (`worker/index.ts`) that serves the built site as static
-  assets and handles `POST /api/contact`, emailing submissions via [Web3Forms](https://web3forms.com)
+- Cloudflare Pages for hosting (static assets only, no Functions/Worker)
+- [Web3Forms](https://web3forms.com) for the contact form — the client-side
+  script in `ContactForm.astro` posts straight to their API
 
-Note: this project's Cloudflare dashboard deploy command runs `wrangler
-deploy` (not `wrangler pages deploy`), so it's set up as a plain Worker with
-a static-assets binding rather than a classic Pages project.
+Note on history: this project went through two broken setups before landing
+here. First a Cloudflare Worker (`wrangler deploy`) that the dashboard never
+actually deployed — the live site stayed on the old Pages project with no
+`/api/contact` route at all. Then a Cloudflare Pages Function calling
+Web3Forms server-side — but Web3Forms' free plan rejects server-to-server
+submissions with a 403 ("Use our API in client side or contact support with
+server IP address (Pro plan is required)"). Both are gone now; the form talks
+to Web3Forms directly from the browser, which is what their free plan
+actually expects.
 
 ## Local development
 
 ```bash
 pnpm install
-pnpm dev              # http://localhost:4321 — site only, /api/contact is not served here
+pnpm dev              # http://localhost:4321 — form works fully, incl. submissions
 ```
 
-To test the contact form end-to-end locally (including the worker):
-
-```bash
-cp .dev.vars.example .dev.vars   # fill in real values, see below
-pnpm worker:dev                  # builds + runs wrangler dev on the built output
-```
+No separate backend dev server is needed — the form talks to Web3Forms
+directly, the same way in dev, preview, and production.
 
 ## Media assets
 
@@ -49,44 +52,38 @@ If you'd rather use a different frame as the poster, or want the video re-encode
    for submissions is whatever you configured when you created the Access Key
    (e.g. `anfragen@lorenzbeglinger.com`) — there's no separate "to" setting
    here, it's tied to the key itself.
-2. Set it as a secret on the live Worker via **the CLI, not the dashboard UI**
-   (see the warning below for why):
-   ```bash
-   pnpm dlx wrangler secret put WEB3FORMS_ACCESS_KEY --name lorenzbeglinger-website
-   ```
-   It'll prompt you to log in (if needed) and then to paste the Access Key.
+2. Open `src/components/ContactForm.astro` and set `WEB3FORMS_ACCESS_KEY` (in
+   the `<script>` block) to that Access Key.
+3. Rebuild/redeploy.
 
-Without it set, `/api/contact` returns a 500 and the form shows the error
-banner. The submitter's own address is sent as `email`, which Web3Forms uses
-as the Reply-To automatically — replying to the notification email goes
-straight back to them.
+> Web3Forms Access Keys are meant to be public in this client-side model —
+> they're tied to your destination inbox and rate-limited, not a secret.
+> **Don't** set it as a Cloudflare environment variable/secret — Web3Forms'
+> free plan rejects server-to-server submissions with a 403, which is exactly
+> the failure this setup replaced.
 
-> **⚠️ Dashboard "Variables and Secrets" don't work for this Worker.** This
-> project's Cloudflare deploy command is `npx wrangler deploy`, run fresh by
-> Cloudflare's CI on every push. Confirmed by debugging a live failure: values
-> added through the dashboard's Variables and Secrets UI (both `secret`- and
-> plain `variable`-typed) never reached the running Worker's `env` — only
-> `wrangler secret put` (or a `[vars]` entry in `wrangler.toml` for
-> non-sensitive values) actually persists across those CI-triggered deploys.
-> Always use the CLI for secrets on this project.
+Without a valid key, Web3Forms responds with `success: false` and the form
+shows the error banner. The submitter's own address is sent as `email`, which
+Web3Forms uses as the Reply-To automatically — replying to the notification
+email goes straight back to them.
 
-## Deploying (GitHub + Cloudflare)
+## Deploying (GitHub + Cloudflare Pages)
 
 1. Push this repo to a GitHub repository under your account.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Connect to Git**, pick the repo.
+2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick the repo.
 3. Build settings:
    - Build command: `pnpm build`
-   - Deploy command: `npx wrangler deploy` (this is what actually reads `wrangler.toml`'s `main` + `[assets]` config)
-4. Add the environment variable above.
-5. Deploy. Cloudflare will auto-build on every push to `main`.
+   - Build output directory: `dist`
+4. Deploy. Cloudflare will auto-build on every push to `main`. No environment
+   variables needed — it's a static build.
 
 Alternatively, deploy from the CLI once `wrangler` is authenticated (`pnpm dlx wrangler login`):
 
 ```bash
-pnpm worker:deploy
+pnpm pages:deploy
 ```
 
-(`wrangler` isn't a committed dependency — `worker:dev`/`worker:deploy` fetch it on demand via `pnpm dlx` so it never runs during Cloudflare's own build step.)
+(`wrangler` isn't a committed dependency — `pages:deploy` fetches it on demand via `pnpm dlx` so it never runs during Cloudflare's own build step.)
 
 ## Project structure
 
@@ -98,14 +95,12 @@ src/
     Hero.astro
     Programs.astro         "Zwei Programme" cards
     About.astro             video/poster + bio
-    ContactForm.astro       validation, success/error states, honeypot
+    ContactForm.astro       validation, success/error states, honeypot,
+                            posts directly to Web3Forms (no backend)
     Footer.astro
     CookieBanner.astro      accept/reject, persisted in localStorage
   pages/
     index.astro
     impressum.astro
     datenschutz.astro
-worker/
-  index.ts                  fetch handler: routes /api/contact, else serves ASSETS
-  contact.ts                 validation + Web3Forms send logic
 ```
