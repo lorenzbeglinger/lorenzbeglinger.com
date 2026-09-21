@@ -83,10 +83,15 @@ const options = [
             <p class="field-error" data-field-error></p>
           </fieldset>
 
-          <div class="row">
+          <div class="row row-3">
             <div class="field" data-field="date">
               <label for="date">Datum</label>
               <input id="date" name="date" type="date" required />
+              <p class="field-error" data-field-error></p>
+            </div>
+            <div class="field" data-field="time">
+              <label for="time">Uhrzeit <span class="optional">(optional)</span></label>
+              <input id="time" name="time" type="time" step="900" />
               <p class="field-error" data-field-error></p>
             </div>
             <div class="field" data-field="guests">
@@ -130,7 +135,7 @@ const options = [
 </section>
 
 <script>
-  type FieldName = "name" | "email" | "type" | "date" | "guests";
+  type FieldName = "name" | "email" | "type" | "date" | "time" | "guests";
 
   // Web3Forms access keys are meant to be public — they're tied to the
   // destination inbox and rate-limited, not a secret. Their free plan only
@@ -171,7 +176,7 @@ const options = [
   }
 
   function clearErrors() {
-    (["name", "email", "type", "date", "guests"] as FieldName[]).forEach((n) =>
+    (["name", "email", "type", "date", "time", "guests"] as FieldName[]).forEach((n) =>
       setFieldError(n, null)
     );
     banner?.setAttribute("hidden", "");
@@ -198,6 +203,11 @@ const options = [
     const date = String(data.get("date") ?? "");
     if (!date) errors.date = "Bitte wähle ein Datum.";
 
+    // Optional field: only reject a malformed value (browsers emit HH:MM).
+    const time = String(data.get("time") ?? "").trim();
+    if (time && !/^\d{2}:\d{2}$/.test(time))
+      errors.time = "Bitte gib eine gültige Uhrzeit an.";
+
     const guests = String(data.get("guests") ?? "");
     const guestsNum = Number(guests);
     if (!guests || !Number.isFinite(guestsNum) || guestsNum < 1)
@@ -218,12 +228,14 @@ const options = [
     }).format(date);
   }
 
-  function showSuccess(name: string, dateIso: string) {
+  function showSuccess(name: string, dateIso: string, time = "") {
     const firstName = name.trim().split(/\s+/)[0] || "dir";
     const nameEl = document.querySelector("[data-success-name]");
     const dateEl = document.querySelector("[data-success-date]");
     if (nameEl) nameEl.textContent = firstName;
-    if (dateEl) dateEl.textContent = formatGermanDate(dateIso);
+    if (dateEl)
+      dateEl.textContent =
+        formatGermanDate(dateIso) + (time ? ` um ${time} Uhr` : "");
 
     formView?.setAttribute("hidden", "");
     successView?.removeAttribute("hidden");
@@ -246,7 +258,11 @@ const options = [
     // Honeypot: bots fill hidden fields. Pretend success without sending.
     const honeypot = String(data.get("website") ?? "").trim();
     if (honeypot !== "") {
-      showSuccess(String(data.get("name") ?? ""), String(data.get("date") ?? ""));
+      showSuccess(
+        String(data.get("name") ?? ""),
+        String(data.get("date") ?? ""),
+        String(data.get("time") ?? "")
+      );
       return;
     }
 
@@ -268,16 +284,18 @@ const options = [
     const email = String(data.get("email") ?? "").trim();
     const type = String(data.get("type") ?? "");
     const date = String(data.get("date") ?? "");
+    const time = String(data.get("time") ?? "").trim();
     const guests = String(data.get("guests") ?? "");
 
     const payload = {
       access_key: WEB3FORMS_ACCESS_KEY,
-      subject: `Neue Anfrage von ${name} — ${date}`,
+      subject: `Neue Anfrage von ${name} — ${date}${time ? ` ${time}` : ""}`,
       from_name: name,
       name,
       email,
       Programm: PROGRAM_LABELS[type] ?? type,
       Datum: date,
+      Uhrzeit: time || "noch offen",
       Gäste: guests,
     };
 
@@ -290,7 +308,7 @@ const options = [
       const result = await res.json().catch(() => null);
 
       if (res.ok && result?.success) {
-        showSuccess(name, date);
+        showSuccess(name, date, time);
       } else {
         banner?.removeAttribute("hidden");
       }
@@ -379,6 +397,10 @@ const options = [
     margin-bottom: 22px;
   }
 
+  .row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   .pillgroup + .row {
     margin-top: 34px;
   }
@@ -392,6 +414,12 @@ const options = [
     color: var(--text-cream-faint);
     margin-bottom: 11px;
     padding: 0;
+  }
+
+  .field label .optional {
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.6;
   }
 
   .field input {
@@ -408,7 +436,8 @@ const options = [
     color: rgba(243, 239, 230, 0.35);
   }
 
-  .field input[type="date"] {
+  .field input[type="date"],
+  .field input[type="time"] {
     color-scheme: dark;
   }
 
@@ -536,7 +565,8 @@ const options = [
       gap: 40px;
     }
 
-    .row {
+    .row,
+    .row-3 {
       grid-template-columns: 1fr;
       gap: 22px;
     }
