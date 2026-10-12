@@ -85,12 +85,12 @@ const options = [
 
           <div class="row row-3">
             <div class="field" data-field="date">
-              <label for="date">Datum</label>
-              <input id="date" name="date" type="date" required />
+              <label for="date">Wunschtermin <span class="optional">(optional)</span></label>
+              <input id="date" name="date" type="date" />
               <p class="field-error" data-field-error></p>
             </div>
             <div class="field" data-field="time">
-              <label for="time">Uhrzeit <span class="optional">(optional)</span></label>
+              <label for="time">Bevorzugte Uhrzeit <span class="optional">(optional)</span></label>
               <input id="time" name="time" type="time" step="900" />
               <p class="field-error" data-field-error></p>
             </div>
@@ -125,7 +125,7 @@ const options = [
         </div>
         <h3>Danke, <span data-success-name>dir</span> für deine Anfrage.</h3>
         <p>
-          Ich schaue mir den <span data-success-date>gewählten Termin</span> an
+          Ich schaue mir <span data-success-date>deine Anfrage</span> an
           und melde mich innerhalb von 48 Stunden mit einer Bestätigung und
           den Formalitäten.
         </p>
@@ -200,8 +200,10 @@ const options = [
     const type = String(data.get("type") ?? "");
     if (!type) errors.type = "Bitte wähle ein Programm.";
 
-    const date = String(data.get("date") ?? "");
-    if (!date) errors.date = "Bitte wähle ein Datum.";
+    // Optional field: only reject a malformed value (browsers emit YYYY-MM-DD).
+    const date = String(data.get("date") ?? "").trim();
+    if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date))
+      errors.date = "Bitte gib einen gültigen Wunschtermin an.";
 
     // Optional field: only reject a malformed value (browsers emit HH:MM).
     const time = String(data.get("time") ?? "").trim();
@@ -234,8 +236,9 @@ const options = [
     const dateEl = document.querySelector("[data-success-date]");
     if (nameEl) nameEl.textContent = firstName;
     if (dateEl)
-      dateEl.textContent =
-        formatGermanDate(dateIso) + (time ? ` um ${time} Uhr` : "");
+      dateEl.textContent = dateIso
+        ? `den ${formatGermanDate(dateIso)}${time ? ` um ${time} Uhr` : ""}`
+        : "deine Anfrage";
 
     formView?.setAttribute("hidden", "");
     successView?.removeAttribute("hidden");
@@ -283,18 +286,19 @@ const options = [
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
     const type = String(data.get("type") ?? "");
-    const date = String(data.get("date") ?? "");
+    const date = String(data.get("date") ?? "").trim();
     const time = String(data.get("time") ?? "").trim();
     const guests = String(data.get("guests") ?? "");
+    const termin = [date, time].filter(Boolean).join(" ") || "Termin offen";
 
     const payload = {
       access_key: WEB3FORMS_ACCESS_KEY,
-      subject: `Neue Anfrage von ${name} — ${date}${time ? ` ${time}` : ""}`,
+      subject: `Neue Anfrage von ${name} — ${termin}`,
       from_name: name,
       name,
       email,
       Programm: PROGRAM_LABELS[type] ?? type,
-      Datum: date,
+      Wunschtermin: date || "noch offen",
       Uhrzeit: time || "noch offen",
       Gäste: guests,
     };
